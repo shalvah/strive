@@ -9,7 +9,7 @@
         "lint": "eslint src index.js"
     },
     "author": "Shalvah <hello@shalvah.me>",
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "debug": "^4.1.1"
     },
