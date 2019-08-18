@@ -1,0 +1,26 @@
+{
+    "name": "trythese",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test-init": "jasmine init",
+        "test": "jasmine",
+        "lint": "eslint src index.js"
+    },
+    "author": "Shalvah <hello@shalvah.me>",
+    "license": "ISC",
+    "dependencies": {
+        "debug": "^4.1.1"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "husky": "^3.0.4",
+        "jasmine": "^3.4.0"
+    },
+    "husky": {
+        "hooks": {
+            "pre-push": "npm run lint"
+        }
+    }
+}
