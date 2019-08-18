@@ -6,7 +6,7 @@
     "scripts": {
         "test-init": "jasmine init",
         "test": "jasmine",
-        "lint": "eslint src index.js"
+        "lint": "eslint index.js"
     },
     "author": "Shalvah <hello@shalvah.me>",
     "license": "MIT",
