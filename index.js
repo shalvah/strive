@@ -50,17 +50,17 @@ const tryTheseWithMutations = async ({
         if (checker(result)) {
             return {
                 result,
-                finalStrategy: mutation.name,
+                lastAttempt: mutation.name,
             };
         }
     }
 
     return defaultValue !== undefined ? {
         result: defaultValue,
-        finalStrategy: null,
+        lastAttempt: null,
     } : {
             result,
-            finalStrategy: mutation && mutation.name,
+            lastAttempt: mutation && mutation.name,
         };
 };
 
@@ -89,17 +89,17 @@ const tryTheseWithValues = async ({
         if (checker(result)) {
             return {
                 result,
-                finalStrategy: parseInt(index),
+                lastAttempt: parseInt(index),
             };
         }
     }
 
     return defaultValue !== undefined ? {
         result: defaultValue,
-        finalStrategy: null,
+        lastAttempt: null,
     } : {
             result,
-            finalStrategy: parseInt(index),
+            lastAttempt: parseInt(index),
         };
 };
 
@@ -128,17 +128,17 @@ const tryTheseWithStrategies = async ({
         if (checker(result)) {
             return {
                 result,
-                finalStrategy: strategy.name,
+                lastAttempt: strategy.name,
             };
         }
     }
 
     return defaultValue !== undefined ? {
         result: defaultValue,
-        finalStrategy: null,
+        lastAttempt: null,
     } : {
             result,
-            finalStrategy: strategy && strategy.name,
+            lastAttempt: strategy && strategy.name,
         };
 };
 

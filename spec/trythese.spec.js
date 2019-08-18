@@ -25,7 +25,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -34,7 +34,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(true);
-            expect(finalStrategy).toBe(2);
+            expect(lastAttempt).toBe(2);
 
         });
 
@@ -49,7 +49,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -58,7 +58,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(false);
-            expect(finalStrategy).toBe(3);
+            expect(lastAttempt).toBe(3);
 
         });
 
@@ -75,7 +75,7 @@ describe("tryThese", () => {
 
             const defaultValue = 69;
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -85,7 +85,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(defaultValue);
-            expect(finalStrategy).toBe(null);
+            expect(lastAttempt).toBe(null);
 
         });
     });
@@ -123,7 +123,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -132,7 +132,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(true);
-            expect(finalStrategy).toBe("useParam3");
+            expect(lastAttempt).toBe("useParam3");
 
         });
 
@@ -147,7 +147,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -156,7 +156,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(false);
-            expect(finalStrategy).toBe("useParam4");
+            expect(lastAttempt).toBe("useParam4");
 
         });
 
@@ -173,7 +173,7 @@ describe("tryThese", () => {
 
             const defaultValue = 69;
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -183,7 +183,7 @@ describe("tryThese", () => {
             });
 
             expect(result).toBe(defaultValue);
-            expect(finalStrategy).toBe(null);
+            expect(lastAttempt).toBe(null);
 
         });
     });
@@ -209,38 +209,38 @@ describe("tryThese", () => {
         ];
 
         it("stops at the first success", async () => {
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 strategies,
                 checker: (v) => v === 3,
             });
 
             expect(result).toBe(3);
-            expect(finalStrategy).toBe("returns3");
+            expect(lastAttempt).toBe("returns3");
 
         });
 
         it("returns final result if no successes", async () => {
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 strategies,
                 checker: (v) => v === 0,
             });
 
             expect(result).toBe(4);
-            expect(finalStrategy).toBe("returns4");
+            expect(lastAttempt).toBe("returns4");
 
         });
 
         it("returns defaultValue if no successes and defaultValue is specified", async () => {
             const defaultValue = 69;
 
-            const { result, finalStrategy, } = await tryThese({
+            const { result, lastAttempt, } = await tryThese({
                 strategies,
                 checker: (v) => v === 0,
                 defaultValue,
             });
 
             expect(result).toBe(defaultValue);
-            expect(finalStrategy).toBe(null);
+            expect(lastAttempt).toBe(null);
 
         });
     });
