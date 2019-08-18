@@ -1,22 +1,51 @@
 'use strict';
 
+type GeneralTryTheseOptions = {
+    defaultValue?: any,
+    checker: (result: any) => boolean,
+    ignoreErrors?: boolean
+};
+
+type TryTheseValueOptions = GeneralTryTheseOptions & {
+    values: Array<any>,
+    action: (value: any) => any,
+};
+
+type TryTheseMutationOptions = GeneralTryTheseOptions & {
+    mutations: Array<() => Array<any>>,
+    action: (...values: any[]) => any,
+};
+
+type TryTheseStrategyOptions = GeneralTryTheseOptions & {
+    strategies: Array<() => any>,
+};
+
+type TryTheseOptions = TryTheseMutationOptions | TryTheseValueOptions | TryTheseStrategyOptions;
+
 const log = require('debug')('lib:trythese');
+import { returnFailure, returnSuccess } from "./utils";
 
-const tryThese = async ({
-    mutations = [],
-    values = [],
-    action,
-    strategies = [],
-    defaultValue,
-    checker,
-    ignoreErrors = true
-}) => {
+const defaultOptions: Partial<GeneralTryTheseOptions> = {
+    ignoreErrors: true,
+};
 
-    if (strategies.length) {
+const tryThese = async (options: TryTheseOptions = defaultOptions as TryTheseOptions) => {
+    const {
+        mutations,
+        values,
+        action,
+        strategies,
+        defaultValue,
+        checker,
+        ignoreErrors
+    } = options as (TryTheseMutationOptions & TryTheseValueOptions & TryTheseStrategyOptions);
+    // Fuck it, TypeScript, I know what I'm doing!
+
+    if (strategies) {
         return tryTheseWithStrategies({ strategies, checker, ignoreErrors, defaultValue });
     }
 
-    if (values.length) {
+    if (values) {
         return tryTheseWithValues({ values, action, checker, ignoreErrors, defaultValue });
     }
 
@@ -29,7 +58,7 @@ const tryTheseWithMutations = async ({
     checker,
     ignoreErrors = true,
     defaultValue
-}) => {
+} : TryTheseMutationOptions) => {
     let mutation, result;
     const iterator = mutations[Symbol.iterator]();
 
@@ -48,20 +77,11 @@ const tryTheseWithMutations = async ({
         }
 
         if (checker(result)) {
-            return {
-                result,
-                lastAttempt: mutation.name,
-            };
+            return returnSuccess(mutation.name, result);
         }
     }
 
-    return defaultValue !== undefined ? {
-        result: defaultValue,
-        lastAttempt: null,
-    } : {
-            result,
-            lastAttempt: mutation && mutation.name,
-        };
+    return returnFailure(mutation && mutation.name, result, defaultValue);
 };
 
 const tryTheseWithValues = async ({
@@ -70,9 +90,8 @@ const tryTheseWithValues = async ({
     checker,
     ignoreErrors = true,
     defaultValue,
-}) => {
+} : TryTheseValueOptions) => {
     let value, index, result;
-    const iterator = values[Symbol.iterator]();
 
     for ([index, value] of Object.entries(values)) {
         log(`Trying ${JSON.stringify(value)}`);
@@ -87,20 +106,11 @@ const tryTheseWithValues = async ({
         }
 
         if (checker(result)) {
-            return {
-                result,
-                lastAttempt: parseInt(index),
-            };
+            return returnSuccess(Number(index), result);
         }
     }
 
-    return defaultValue !== undefined ? {
-        result: defaultValue,
-        lastAttempt: null,
-    } : {
-            result,
-            lastAttempt: parseInt(index),
-        };
+    return returnFailure(Number(index), result, defaultValue);
 };
 
 const tryTheseWithStrategies = async ({
@@ -108,7 +118,7 @@ const tryTheseWithStrategies = async ({
     checker,
     ignoreErrors = true,
     defaultValue,
-}) => {
+} : TryTheseStrategyOptions) => {
     let strategy, result;
     const iterator = strategies[Symbol.iterator]();
 
@@ -126,20 +136,11 @@ const tryTheseWithStrategies = async ({
         }
 
         if (checker(result)) {
-            return {
-                result,
-                lastAttempt: strategy.name,
-            };
+            return returnSuccess(strategy.name, result);
         }
     }
 
-    return defaultValue !== undefined ? {
-        result: defaultValue,
-        lastAttempt: null,
-    } : {
-            result,
-            lastAttempt: strategy && strategy.name,
-        };
+    return returnFailure(strategy && strategy.name, result, defaultValue);
 };
 
 module.exports = tryThese;

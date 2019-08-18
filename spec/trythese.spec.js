@@ -1,6 +1,6 @@
 'use strict';
 
-const tryThese = require('../index');
+const tryThese = require('../src/index');
 
 describe("tryThese", () => {
 

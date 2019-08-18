@@ -2,11 +2,14 @@
     "name": "trythese",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "src/index.js",
     "scripts": {
         "test-init": "jasmine init",
         "test": "jasmine",
-        "lint": "eslint index.js"
+        "lint": "eslint index.js",
+        "pretest": "npm run build",
+        "build": "tsc --listEmittedFiles",
+        "prepublish": "npm run build"
     },
     "author": "Shalvah <hello@shalvah.me>",
     "license": "MIT",
@@ -14,9 +17,11 @@
         "debug": "^4.1.1"
     },
     "devDependencies": {
+        "@types/node": "^12.7.2",
         "eslint": "^6.1.0",
         "husky": "^3.0.4",
-        "jasmine": "^3.4.0"
+        "jasmine": "^3.4.0",
+        "typescript": "^3.5.3"
     },
     "husky": {
         "hooks": {
