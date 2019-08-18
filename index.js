@@ -7,26 +7,28 @@ const tryThese = async ({
     values = [],
     action,
     strategies = [],
+    defaultValue,
     checker,
     ignoreErrors = true
 }) => {
 
     if (strategies.length) {
-        return tryWithStrategies({ strategies, checker, ignoreErrors });
+        return tryTheseWithStrategies({ strategies, checker, ignoreErrors, defaultValue });
     }
 
     if (values.length) {
-        return tryTheseWithValues({ values, action, checker, ignoreErrors });
+        return tryTheseWithValues({ values, action, checker, ignoreErrors, defaultValue });
     }
 
-    return tryTheseWithMutations({ mutations, action, checker, ignoreErrors });
+    return tryTheseWithMutations({ mutations, action, checker, ignoreErrors, defaultValue });
 };
 
 const tryTheseWithMutations = async ({
     mutations = [],
     action,
     checker,
-    ignoreErrors = true
+    ignoreErrors = true,
+    defaultValue
 }) => {
     let mutation, result;
     const iterator = mutations[Symbol.iterator]();
@@ -46,27 +48,33 @@ const tryTheseWithMutations = async ({
         }
 
         if (checker(result)) {
-            break;
+            return {
+                result,
+                finalStrategy: mutation.name,
+            };
         }
     }
 
-    return {
-        result,
-        finalStrategy: mutation && mutation.name,
-    };
+    return defaultValue !== undefined ? {
+        result: defaultValue,
+        finalStrategy: null,
+    } : {
+            result,
+            finalStrategy: mutation && mutation.name,
+        };
 };
 
 const tryTheseWithValues = async ({
     values = [],
     action,
     checker,
-    ignoreErrors = true
+    ignoreErrors = true,
+    defaultValue,
 }) => {
-    let value, result;
+    let value, index, result;
     const iterator = values[Symbol.iterator]();
 
-    for (let next = iterator.next(); !next.done; next = iterator.next()) {
-        value = next.value;
+    for ([index, value] of Object.entries(values)) {
         log(`Trying ${JSON.stringify(value)}`);
         try {
             result = await action(value);
@@ -79,20 +87,27 @@ const tryTheseWithValues = async ({
         }
 
         if (checker(result)) {
-            break;
+            return {
+                result,
+                finalStrategy: parseInt(index),
+            };
         }
     }
 
-    return {
-        result,
-        finalStrategy: value,
-    };
+    return defaultValue !== undefined ? {
+        result: defaultValue,
+        finalStrategy: null,
+    } : {
+            result,
+            finalStrategy: parseInt(index),
+        };
 };
 
-const tryWithStrategies = async ({
+const tryTheseWithStrategies = async ({
     strategies = [],
     checker,
-    ignoreErrors = true
+    ignoreErrors = true,
+    defaultValue,
 }) => {
     let strategy, result;
     const iterator = strategies[Symbol.iterator]();
@@ -111,14 +126,20 @@ const tryWithStrategies = async ({
         }
 
         if (checker(result)) {
-            break;
+            return {
+                result,
+                finalStrategy: strategy.name,
+            };
         }
     }
 
-    return {
-        result,
-        finalStrategy: strategy && strategy.name,
-    };
+    return defaultValue !== undefined ? {
+        result: defaultValue,
+        finalStrategy: null,
+    } : {
+            result,
+            finalStrategy: strategy && strategy.name,
+        };
 };
 
 module.exports = tryThese;
