@@ -19,6 +19,15 @@ const tryThese = async ({
         return tryTheseWithValues({ values, action, checker, ignoreErrors });
     }
 
+    return tryTheseWithMutations({ mutations, action, checker, ignoreErrors });
+};
+
+const tryTheseWithMutations = async ({
+    mutations = [],
+    action,
+    checker,
+    ignoreErrors = true
+}) => {
     let mutation, result;
     const iterator = mutations[Symbol.iterator]();
 
