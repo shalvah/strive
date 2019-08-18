@@ -143,4 +143,4 @@ const tryTheseWithStrategies = async ({
     return returnFailure(strategy && strategy.name, result, defaultValue);
 };
 
-module.exports = tryThese;
+export = tryThese;

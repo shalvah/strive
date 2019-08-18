@@ -1,16 +1,26 @@
 {
     "name": "essayer",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "",
     "main": "src/index.js",
+    "types": "src/index.d.ts",
     "scripts": {
         "test-init": "jasmine init",
         "test": "jasmine",
         "lint": "eslint src/**.js",
         "pretest": "npm run build",
         "build": "tsc --listEmittedFiles",
-        "prepublish": "npm run build"
+        "build-with-declarations": "tsc --listEmittedFiles --declaration",
+        "prepublish": "npm run build-with-declarations"
     },
+    "keywords": [
+      "invoker",
+      "try",
+      "tasks",
+      "strategies",
+      "strategy",
+      "runner"
+    ],
     "author": "Shalvah <hello@shalvah.me>",
     "license": "MIT",
     "dependencies": {
