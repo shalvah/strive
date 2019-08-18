@@ -22,7 +22,7 @@ type TryTheseStrategyOptions = GeneralTryTheseOptions & {
 
 type TryTheseOptions = TryTheseMutationOptions | TryTheseValueOptions | TryTheseStrategyOptions;
 
-const log = require('debug')('lib:trythese');
+const log = require('debug')('lib:essayer');
 import { returnFailure, returnSuccess } from "./utils";
 
 const defaultOptions: Partial<GeneralTryTheseOptions> = {
