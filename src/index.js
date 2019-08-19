@@ -1,37 +1,32 @@
 'use strict';
-const log = require('debug')('lib:essayer');
+const log = require('debug')('lib:strive');
 const utils_1 = require("./utils");
-const defaultOptions = {
+const strive = async (options = {
     ignoreErrors: true,
-};
-const tryThese = async (options = defaultOptions) => {
-    const { mutations, values, action, strategies, defaultValue, checker, ignoreErrors } = options;
+}) => {
+    const { mutations, values, action, strategies, checker, defaultValue, ignoreErrors, } = options;
     // Fuck it, TypeScript, I know what I'm doing!
     if (strategies) {
-        return tryTheseWithStrategies({ strategies, checker, ignoreErrors, defaultValue });
+        return striveWithStrategies({ strategies, checker, ignoreErrors, defaultValue });
     }
     if (values) {
-        return tryTheseWithValues({ values, action, checker, ignoreErrors, defaultValue });
+        return striveWithValues({ values, action, checker, ignoreErrors, defaultValue });
     }
-    return tryTheseWithMutations({ mutations, action, checker, ignoreErrors, defaultValue });
+    return striveWithMutations({ mutations, action, checker, ignoreErrors, defaultValue });
 };
-const tryTheseWithMutations = async ({ mutations = [], action, checker, ignoreErrors = true, defaultValue }) => {
+const striveWithMutations = async ({ mutations = [], action, checker, ignoreErrors = true, defaultValue }) => {
     let mutation, result;
-    const iterator = mutations[Symbol.iterator]();
-    for (let next = iterator.next(); !next.done; next = iterator.next()) {
-        mutation = next.value;
-        log(`Trying ${mutation.name}`);
+    for (mutation of Object.values(mutations)) {
+        log(`Trying mutation ${mutation.name}`);
         const parameters = await mutation();
         try {
             result = await action(...parameters);
         }
         catch (e) {
-            if (ignoreErrors) {
+            if (ignoreErrors)
                 continue;
-            }
-            else {
+            else
                 throw e;
-            }
         }
         if (checker(result)) {
             return utils_1.returnSuccess(mutation.name, result);
@@ -39,20 +34,18 @@ const tryTheseWithMutations = async ({ mutations = [], action, checker, ignoreEr
     }
     return utils_1.returnFailure(mutation && mutation.name, result, defaultValue);
 };
-const tryTheseWithValues = async ({ values = [], action, checker, ignoreErrors = true, defaultValue, }) => {
+const striveWithValues = async ({ values = [], action, checker, ignoreErrors = true, defaultValue, }) => {
     let value, index, result;
     for ([index, value] of Object.entries(values)) {
-        log(`Trying ${JSON.stringify(value)}`);
+        log(`Trying value at ${index}: ${JSON.stringify(value)}`);
         try {
             result = await action(value);
         }
         catch (e) {
-            if (ignoreErrors) {
+            if (ignoreErrors)
                 continue;
-            }
-            else {
+            else
                 throw e;
-            }
         }
         if (checker(result)) {
             return utils_1.returnSuccess(Number(index), result);
@@ -60,22 +53,18 @@ const tryTheseWithValues = async ({ values = [], action, checker, ignoreErrors =
     }
     return utils_1.returnFailure(Number(index), result, defaultValue);
 };
-const tryTheseWithStrategies = async ({ strategies = [], checker, ignoreErrors = true, defaultValue, }) => {
+const striveWithStrategies = async ({ strategies = [], checker, ignoreErrors = true, defaultValue, }) => {
     let strategy, result;
-    const iterator = strategies[Symbol.iterator]();
-    for (let next = iterator.next(); !next.done; next = iterator.next()) {
-        strategy = next.value;
-        log(`Trying ${strategy.name}`);
+    for (strategy of Object.values(strategies)) {
+        log(`Trying strategy ${strategy.name}`);
         try {
             result = await strategy();
         }
         catch (e) {
-            if (ignoreErrors) {
+            if (ignoreErrors)
                 continue;
-            }
-            else {
+            else
                 throw e;
-            }
         }
         if (checker(result)) {
             return utils_1.returnSuccess(strategy.name, result);
@@ -83,4 +72,4 @@ const tryTheseWithStrategies = async ({ strategies = [], checker, ignoreErrors =
     }
     return utils_1.returnFailure(strategy && strategy.name, result, defaultValue);
 };
-module.exports = tryThese;
+module.exports = strive;

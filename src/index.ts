@@ -1,79 +1,71 @@
 'use strict';
 
-type GeneralTryTheseOptions = {
+type GeneralStriveOptions = {
     defaultValue?: any,
     checker: (result: any) => boolean,
     ignoreErrors?: boolean
 };
 
-type TryTheseValueOptions = GeneralTryTheseOptions & {
-    values: Array<any>,
+type StriveValueOptions = GeneralStriveOptions & {
+    values: any[],
     action: (value: any) => any,
 };
 
-type TryTheseMutationOptions = GeneralTryTheseOptions & {
-    mutations: Array<() => Array<any>>,
+type StriveMutationOptions = GeneralStriveOptions & {
+    mutations: Array<() => any[]>,
     action: (...values: any[]) => any,
 };
 
-type TryTheseStrategyOptions = GeneralTryTheseOptions & {
+type StriveStrategyOptions = GeneralStriveOptions & {
     strategies: Array<() => any>,
 };
 
-type TryTheseOptions = TryTheseMutationOptions | TryTheseValueOptions | TryTheseStrategyOptions;
+type StriveOptions = StriveMutationOptions | StriveValueOptions | StriveStrategyOptions;
 
-const log = require('debug')('lib:essayer');
-import { returnFailure, returnSuccess } from "./utils";
+const log = require('debug')('lib:strive');
+import {returnFailure, returnSuccess} from "./utils";
 
-const defaultOptions: Partial<GeneralTryTheseOptions> = {
+const strive = async (options: StriveOptions = {
     ignoreErrors: true,
-};
-
-const tryThese = async (options: TryTheseOptions = defaultOptions as TryTheseOptions) => {
+} as StriveOptions) => {
     const {
         mutations,
         values,
         action,
         strategies,
-        defaultValue,
         checker,
-        ignoreErrors
-    } = options as (TryTheseMutationOptions & TryTheseValueOptions & TryTheseStrategyOptions);
+        defaultValue,
+        ignoreErrors,
+    } = options as (StriveMutationOptions & StriveValueOptions & StriveStrategyOptions);
     // Fuck it, TypeScript, I know what I'm doing!
 
     if (strategies) {
-        return tryTheseWithStrategies({ strategies, checker, ignoreErrors, defaultValue });
+        return striveWithStrategies({strategies, checker, ignoreErrors, defaultValue});
     }
 
     if (values) {
-        return tryTheseWithValues({ values, action, checker, ignoreErrors, defaultValue });
+        return striveWithValues({values, action, checker, ignoreErrors, defaultValue});
     }
 
-    return tryTheseWithMutations({ mutations, action, checker, ignoreErrors, defaultValue });
+    return striveWithMutations({mutations, action, checker, ignoreErrors, defaultValue});
 };
 
-const tryTheseWithMutations = async ({
-    mutations = [],
-    action,
-    checker,
-    ignoreErrors = true,
-    defaultValue
-} : TryTheseMutationOptions) => {
+const striveWithMutations = async ({
+                                       mutations = [],
+                                       action,
+                                       checker,
+                                       ignoreErrors = true,
+                                       defaultValue
+                                   }: StriveMutationOptions) => {
     let mutation, result;
-    const iterator = mutations[Symbol.iterator]();
 
-    for (let next = iterator.next(); !next.done; next = iterator.next()) {
-        mutation = next.value;
-        log(`Trying ${mutation.name}`);
+    for (mutation of Object.values(mutations)) {
+        log(`Trying mutation ${mutation.name}`);
         const parameters = await mutation();
         try {
             result = await action(...parameters);
         } catch (e) {
-            if (ignoreErrors) {
-                continue;
-            } else {
-                throw e;
-            }
+            if (ignoreErrors) continue; else throw e;
         }
 
         if (checker(result)) {
@@ -84,25 +76,21 @@ const tryTheseWithMutations = async ({
     return returnFailure(mutation && mutation.name, result, defaultValue);
 };
 
-const tryTheseWithValues = async ({
-    values = [],
-    action,
-    checker,
-    ignoreErrors = true,
-    defaultValue,
-} : TryTheseValueOptions) => {
+const striveWithValues = async ({
+                                    values = [],
+                                    action,
+                                    checker,
+                                    ignoreErrors = true,
+                                    defaultValue,
+                                }: StriveValueOptions) => {
     let value, index, result;
 
     for ([index, value] of Object.entries(values)) {
-        log(`Trying ${JSON.stringify(value)}`);
+        log(`Trying value at ${index}: ${JSON.stringify(value)}`);
         try {
             result = await action(value);
         } catch (e) {
-            if (ignoreErrors) {
-                continue;
-            } else {
-                throw e;
-            }
+            if (ignoreErrors) continue; else throw e;
         }
 
         if (checker(result)) {
@@ -113,26 +101,20 @@ const tryTheseWithValues = async ({
     return returnFailure(Number(index), result, defaultValue);
 };
 
-const tryTheseWithStrategies = async ({
-    strategies = [],
-    checker,
-    ignoreErrors = true,
-    defaultValue,
-} : TryTheseStrategyOptions) => {
+const striveWithStrategies = async ({
+                                        strategies = [],
+                                        checker,
+                                        ignoreErrors = true,
+                                        defaultValue,
+                                    }: StriveStrategyOptions) => {
     let strategy, result;
-    const iterator = strategies[Symbol.iterator]();
 
-    for (let next = iterator.next(); !next.done; next = iterator.next()) {
-        strategy = next.value;
-        log(`Trying ${strategy.name}`);
+    for (strategy of Object.values(strategies)) {
+        log(`Trying strategy ${strategy.name}`);
         try {
             result = await strategy();
         } catch (e) {
-            if (ignoreErrors) {
-                continue;
-            } else {
-                throw e;
-            }
+            if (ignoreErrors) continue; else throw e;
         }
 
         if (checker(result)) {
@@ -143,4 +125,4 @@ const tryTheseWithStrategies = async ({
     return returnFailure(strategy && strategy.name, result, defaultValue);
 };
 
-export = tryThese;
+export = strive;

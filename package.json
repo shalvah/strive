@@ -1,6 +1,6 @@
 {
     "name": "strive",
-    "version": "0.1.2",
+    "version": "0.1.4",
     "description": "",
     "main": "src/index.js",
     "types": "src/index.d.ts",
@@ -37,5 +37,6 @@
         "hooks": {
             "pre-push": "npm run lint"
         }
-    }
+    },
+    "eslintIgnore": ["spec/**"]
 }

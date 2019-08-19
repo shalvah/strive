@@ -1,8 +1,8 @@
 'use strict';
 
-const tryThese = require('../src/index');
+const strive = require('../src/index');
 
-describe("tryThese", () => {
+describe("strive", () => {
 
     describe("using values", () => {
         const isTrue = (value) => !!value;
@@ -25,7 +25,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -49,7 +49,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -75,7 +75,7 @@ describe("tryThese", () => {
 
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
@@ -123,7 +123,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -147,7 +147,7 @@ describe("tryThese", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -173,7 +173,7 @@ describe("tryThese", () => {
 
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
@@ -209,7 +209,7 @@ describe("tryThese", () => {
         ];
 
         it("stops at the first success", async () => {
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 strategies,
                 checker: (v) => v === 3,
             });
@@ -220,7 +220,7 @@ describe("tryThese", () => {
         });
 
         it("returns final result if no successes", async () => {
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 strategies,
                 checker: (v) => v === 0,
             });
@@ -233,7 +233,7 @@ describe("tryThese", () => {
         it("returns defaultValue if no successes and defaultValue is specified", async () => {
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await tryThese({
+            const { result, lastAttempt, } = await strive({
                 strategies,
                 checker: (v) => v === 0,
                 defaultValue,

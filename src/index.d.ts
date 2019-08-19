@@ -1,25 +1,25 @@
-declare type GeneralTryTheseOptions = {
+declare type GeneralStriveOptions = {
     defaultValue?: any;
     checker: (result: any) => boolean;
     ignoreErrors?: boolean;
 };
-declare type TryTheseValueOptions = GeneralTryTheseOptions & {
-    values: Array<any>;
+declare type StriveValueOptions = GeneralStriveOptions & {
+    values: any[];
     action: (value: any) => any;
 };
-declare type TryTheseMutationOptions = GeneralTryTheseOptions & {
-    mutations: Array<() => Array<any>>;
+declare type StriveMutationOptions = GeneralStriveOptions & {
+    mutations: Array<() => any[]>;
     action: (...values: any[]) => any;
 };
-declare type TryTheseStrategyOptions = GeneralTryTheseOptions & {
+declare type StriveStrategyOptions = GeneralStriveOptions & {
     strategies: Array<() => any>;
 };
-declare type TryTheseOptions = TryTheseMutationOptions | TryTheseValueOptions | TryTheseStrategyOptions;
-declare const tryThese: (options?: TryTheseOptions) => Promise<{
+declare type StriveOptions = StriveMutationOptions | StriveValueOptions | StriveStrategyOptions;
+declare const strive: (options?: StriveOptions) => Promise<{
     result: any;
     lastAttempt: string | number | undefined;
 } | {
     result: any;
     lastAttempt: null;
 }>;
-export = tryThese;
+export = strive;

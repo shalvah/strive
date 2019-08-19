@@ -20,5 +20,5 @@ module.exports = {
         "no-inner-declarations": ["off"],
         "no-mixed-spaces-and-tabs": ["off"],
         "no-unused-vars": ["warn"],
-    }
+    },
 };
