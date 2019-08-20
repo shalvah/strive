@@ -7,7 +7,7 @@ Strive. Don't give up. Try a bunch of different approaches to get what you're lo
 
 Strive is a tool that allows you to try different techniques to accomplish a task, minus the boilerplate. Let's see how.
 
-Supposing you were building an app that fetches song lyrics from some online servies. The songs aren't popular, so there's no guarantee any single site (say, genius.com) will have them. So you have a couple of options. Here's how you could do this with strive:
+Suppose you were building an app that fetches song lyrics from some online services. The songs aren't popular, so there's no guarantee any single site (say, genius.com) will have them. So you have a couple of options. Here's how you could do this with strive:
 
 ```js
     const strategies = [
@@ -55,7 +55,7 @@ If none of the strategies produces a passing result, the response from Strive wi
 ``` 
 
 ### An easier way - Using `values`
-Tere's an easier way we could do this. Let's assume these site's APIs work in the same manner; the only thing different is the URLs. We could replace these separate strategies with a single _action_ and a list of the different values to try. The action is the actual work that's done (calling an API), the values are the parameters Strive uses for the action:
+There's an easier way we could do this. Let's assume these site's APIs work in the same manner; the only thing different is the URLs. We could replace these separate strategies with a single _action_ and a list of the different values to try. The action is the actual work that's done (calling an API), the values are the parameters Strive uses for the action:
 
 ```js
     const values = [
@@ -87,15 +87,15 @@ There's a middle ground between multiple `strategies` and multiple `values` with
             return ["api.genius.com"];
         },
 
-        function tryMusixMatchAPI() {
+        function useMusixMatchAPI() {
             return ["api.musixmatch.com", apiKeys.musixmatch];
         },
 
-        function tryLyricFindAPI() {
+        function useLyricFindAPI() {
             return ["lyricfind.com/api", apiKeys.lyricFind];
         },
 
-        function tryLastFM() {
+        function useLastFM() {
             return ["api.last.fm", apiKeys.lastFM, {other: "parameter"}];
         },
     ];
@@ -107,6 +107,8 @@ const { result, lastAttempt, success } = await strive({
 ```
 
 Similar to when using values, each mutation only has to return an array containing the parameters for the action. The elements of the returned array will be used when calling the action. 
+
+In the response from Strive, `lastAttempt` will be the name of the successful mutation, or the last mutation if noe was successful.
 
 ## Important notes
 ### Function names
@@ -138,7 +140,7 @@ By default, if any errors are thrown _while performing your action or strategy_,
 If you want strive to quit when it encounters an error in an action or mutation, pass in `ignoreErrors: false`.
 
 #### `defaultValue`
-By default, when strive runs through all the techniques and all of them fail the `check`, strive will return the followng :
+By default, when strive runs through all the techniques and all of them fail the `check`, strive will return the following :
 
 ```
 {
