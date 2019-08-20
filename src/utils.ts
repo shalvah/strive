@@ -4,17 +4,16 @@ const returnSuccess = (lastAttempt: string | number, result: any) => {
     return {
         result,
         lastAttempt,
+        success: true,
     };
 };
 
 const returnFailure = (lastAttempt: string | number | undefined, result: any, defaultValue: any) => {
-    return defaultValue === undefined ? {
-        result,
+    return {
+        result: defaultValue === undefined ? result : defaultValue,
         lastAttempt,
-    } : {
-            result: defaultValue,
-            lastAttempt: null,
-        };
+        success: false,
+    };
 };
 
 

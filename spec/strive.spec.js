@@ -8,10 +8,10 @@ describe("strive", () => {
         const isTrue = (value) => !!value;
 
         const values = [
-            "param1",
-            "param2",
-            "param3",
-            "param4",
+            ["param1"],
+            ["param2"],
+            ["param3"],
+            ["param4"],
         ];
 
         it("stops at the first success", async () => {
@@ -25,16 +25,17 @@ describe("strive", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue
+                check: isTrue
             });
 
             expect(result).toBe(true);
             expect(lastAttempt).toBe(2);
+            expect(success).toBe(true);
 
         });
 
@@ -49,16 +50,17 @@ describe("strive", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue,
+                check: isTrue,
             });
 
             expect(result).toBe(false);
             expect(lastAttempt).toBe(3);
+            expect(success).toBe(false);
 
         });
 
@@ -75,17 +77,18 @@ describe("strive", () => {
 
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 values,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue,
+                check: isTrue,
                 defaultValue,
             });
 
             expect(result).toBe(defaultValue);
-            expect(lastAttempt).toBe(null);
+            expect(lastAttempt).toBe(3);
+            expect(success).toBe(false);
 
         });
     });
@@ -123,12 +126,12 @@ describe("strive", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue
+                check: isTrue
             });
 
             expect(result).toBe(true);
@@ -147,20 +150,21 @@ describe("strive", () => {
                 return object[param];
             };
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue,
+                check: isTrue,
             });
 
             expect(result).toBe(false);
             expect(lastAttempt).toBe("useParam4");
+            expect(success).toBe(false);
 
         });
 
-        it("returns defaultValue if no successes and defaultValue is specified", async () => {
+        it("returns defaultValue and empty lastAttempt if no successes and defaultValue is specified", async () => {
             const getValue = (param) => {
                 const object = {
                     param1: false,
@@ -173,17 +177,18 @@ describe("strive", () => {
 
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 mutations,
                 action: (param) => {
                     return getValue(param);
                 },
-                checker: isTrue,
+                check: isTrue,
                 defaultValue,
             });
 
             expect(result).toBe(defaultValue);
-            expect(lastAttempt).toBe(null);
+            expect(lastAttempt).toBe("useParam4");
+            expect(success).toBe(false);
 
         });
     });
@@ -209,38 +214,41 @@ describe("strive", () => {
         ];
 
         it("stops at the first success", async () => {
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 strategies,
-                checker: (v) => v === 3,
+                check: (v) => v === 3,
             });
 
             expect(result).toBe(3);
             expect(lastAttempt).toBe("returns3");
+            expect(success).toBe(true);
 
         });
 
         it("returns final result if no successes", async () => {
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 strategies,
-                checker: (v) => v === 0,
+                check: (v) => v === 0,
             });
 
             expect(result).toBe(4);
             expect(lastAttempt).toBe("returns4");
+            expect(success).toBe(false);
 
         });
 
-        it("returns defaultValue if no successes and defaultValue is specified", async () => {
+        it("returns defaultValue and empty lastAttempt if no successes and defaultValue is specified", async () => {
             const defaultValue = 69;
 
-            const { result, lastAttempt, } = await strive({
+            const { result, lastAttempt, success } = await strive({
                 strategies,
-                checker: (v) => v === 0,
+                check: (v) => v === 0,
                 defaultValue,
             });
 
             expect(result).toBe(defaultValue);
-            expect(lastAttempt).toBe(null);
+            expect(lastAttempt).toBe("returns4");
+            expect(success).toBe(false);
 
         });
     });

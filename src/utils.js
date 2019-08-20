@@ -4,16 +4,15 @@ const returnSuccess = (lastAttempt, result) => {
     return {
         result,
         lastAttempt,
+        success: true,
     };
 };
 exports.returnSuccess = returnSuccess;
 const returnFailure = (lastAttempt, result, defaultValue) => {
-    return defaultValue === undefined ? {
-        result,
+    return {
+        result: defaultValue === undefined ? result : defaultValue,
         lastAttempt,
-    } : {
-        result: defaultValue,
-        lastAttempt: null,
+        success: false,
     };
 };
 exports.returnFailure = returnFailure;

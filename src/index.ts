@@ -2,18 +2,18 @@
 
 type GeneralStriveOptions = {
     defaultValue?: any,
-    checker: (result: any) => boolean,
+    check: (result: any) => boolean,
     ignoreErrors?: boolean
 };
 
 type StriveValueOptions = GeneralStriveOptions & {
-    values: any[],
-    action: (value: any) => any,
+    values: Array<any[]>,
+    action: (...args: any[]) => any,
 };
 
 type StriveMutationOptions = GeneralStriveOptions & {
     mutations: Array<() => any[]>,
-    action: (...values: any[]) => any,
+    action: (...args: any[]) => any,
 };
 
 type StriveStrategyOptions = GeneralStriveOptions & {
@@ -33,27 +33,27 @@ const strive = async (options: StriveOptions = {
         values,
         action,
         strategies,
-        checker,
+        check,
         defaultValue,
         ignoreErrors,
     } = options as (StriveMutationOptions & StriveValueOptions & StriveStrategyOptions);
     // Fuck it, TypeScript, I know what I'm doing!
 
     if (strategies) {
-        return striveWithStrategies({strategies, checker, ignoreErrors, defaultValue});
+        return striveWithStrategies({strategies, check, ignoreErrors, defaultValue});
     }
 
     if (values) {
-        return striveWithValues({values, action, checker, ignoreErrors, defaultValue});
+        return striveWithValues({values, action, check, ignoreErrors, defaultValue});
     }
 
-    return striveWithMutations({mutations, action, checker, ignoreErrors, defaultValue});
+    return striveWithMutations({mutations, action, check, ignoreErrors, defaultValue});
 };
 
 const striveWithMutations = async ({
                                        mutations = [],
                                        action,
-                                       checker,
+                                       check,
                                        ignoreErrors = true,
                                        defaultValue
                                    }: StriveMutationOptions) => {
@@ -61,14 +61,14 @@ const striveWithMutations = async ({
 
     for (mutation of Object.values(mutations)) {
         log(`Trying mutation ${mutation.name}`);
-        const parameters = await mutation();
+        const args = await mutation();
         try {
-            result = await action(...parameters);
+            result = await action(...args);
         } catch (e) {
             if (ignoreErrors) continue; else throw e;
         }
 
-        if (checker(result)) {
+        if (check(result)) {
             return returnSuccess(mutation.name, result);
         }
     }
@@ -77,9 +77,9 @@ const striveWithMutations = async ({
 };
 
 const striveWithValues = async ({
-                                    values = [],
+                                    values = [[]],
                                     action,
-                                    checker,
+                                    check,
                                     ignoreErrors = true,
                                     defaultValue,
                                 }: StriveValueOptions) => {
@@ -88,12 +88,12 @@ const striveWithValues = async ({
     for ([index, value] of Object.entries(values)) {
         log(`Trying value at ${index}: ${JSON.stringify(value)}`);
         try {
-            result = await action(value);
+            result = await action(...value);
         } catch (e) {
             if (ignoreErrors) continue; else throw e;
         }
 
-        if (checker(result)) {
+        if (check(result)) {
             return returnSuccess(Number(index), result);
         }
     }
@@ -103,7 +103,7 @@ const striveWithValues = async ({
 
 const striveWithStrategies = async ({
                                         strategies = [],
-                                        checker,
+                                        check,
                                         ignoreErrors = true,
                                         defaultValue,
                                     }: StriveStrategyOptions) => {
@@ -117,7 +117,7 @@ const striveWithStrategies = async ({
             if (ignoreErrors) continue; else throw e;
         }
 
-        if (checker(result)) {
+        if (check(result)) {
             return returnSuccess(strategy.name, result);
         }
     }
