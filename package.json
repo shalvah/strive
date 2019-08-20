@@ -1,6 +1,6 @@
 {
     "name": "strive",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "",
     "main": "src/index.js",
     "types": "src/index.d.ts",
