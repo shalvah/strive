@@ -108,7 +108,7 @@ const { result, lastAttempt, success } = await strive({
 
 Similar to when using values, each mutation only has to return an array containing the parameters for the action. The elements of the returned array will be used when calling the action. 
 
-In the response from Strive, `lastAttempt` will be the name of the successful mutation, or the last mutation if noe was successful.
+In the response from Strive, `lastAttempt` will be the name of the successful mutation, or the last mutation if none was successful.
 
 ## Important notes
 ### Function names
