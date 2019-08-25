@@ -40,7 +40,7 @@ Strive will run the first strategy, then check its result by passing it to the `
 ```
 {
   result: <yourSongLyrics>, // whatever value the successful strategy returned,
-  lastAttempt: "tryAZLyrics", // the name of the last strategy Strive tried
+  lastAttempt: "tryLyricFindAPI", // the name of the successful strategy
   success: true
 }
 ``` 
@@ -49,7 +49,7 @@ If none of the strategies produces a passing result, the response from Strive wi
 ```
 {
   result: <emptyLyrics>, // whatever value the last strategy returned,
-  lastAttempt: "trySongMeanings", // the name of the last strategy
+  lastAttempt: "tryLastFM", // the name of the last strategy in the list
   success: false
 }
 ``` 
@@ -112,14 +112,14 @@ In the response from Strive, `lastAttempt` will be the name of the successful mu
 
 ## Important notes
 ### Function names
-It's not recommended to use anonymous functions with Strive. This is because Strive uses the function's `name` property for logging and reporting purposes (`lastAttempt`). Anonymous functions do not have this value set.
+It is **not** recommended to use anonymous functions with Strive. This is because Strive uses the function's `name` property for logging and reporting purposes (`lastAttempt`). Anonymous functions do not have this value set.
 
 ```js
-const tryAz = function () {};
+const tryAzLyrics = function () {};
 const tryLyricsFind = () => {};
 const strategies = [
     function tryGenius () {}, // 👍 This is good
-    tryAz, // 👍 This is good
+    tryAzLyrics, // 👍 This is good
     tryLyricFind, // 👍 This is good
     function () {}, // ❌ Bad, anonymous function 
     () => {}, // ❌ Bad, anonymous function 
