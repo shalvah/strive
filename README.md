@@ -132,12 +132,29 @@ Strive will always return a Promise containing the result as described above. As
 ### Other options
 There's a few other options you can pass to the `strive` function:
 
+### `race`
+Strive runs all strategies/actions sequentially by default. If you want to run all at once and return the first successful one, then pass in `race: true`.
+
+Note that this only works when you have functions that return promises. Strive will fire all of them off and return the first successful one (that passes the check) using [`promise.any`](https://www.npmjs.com/package/promise.any).
+ 
+```javascript
+const { result, lastAttempt, success } = await strive({
+    strategies,
+    race: true,
+    check: didWeGetTheLyrics,
+});
+```
+
+You should use this if you have multiple asynchronous operations, and you want the first successful one, and you don't care which one it is. 
+
 #### `ignoreErrors`
 By default, if any errors are thrown _while performing your action or strategy_, strive will ignore them and move on to the next action/strategy (or return `undefined` if it's the final one).
 
 > ⚠ Note that this is only while executing the `action` or any of the `strategies`. If an error occurs while executing one of the `mutations`, strive will quit and throw that error back at you.
 
-If you want strive to quit when it encounters an error in an action or mutation, pass in `ignoreErrors: false`.
+If you want strive to quit when it encounters an error in an action or strategy, pass in `ignoreErrors: false`.
+
+> ⚠ Note that when `race` is true and `ignoreErrors` is `false`, all errors will be ignored. Only if the last strategy fails is its error thrown.
 
 #### `defaultValue`
 By default, when strive runs through all the techniques and all of them fail the `check`, strive will return the following :

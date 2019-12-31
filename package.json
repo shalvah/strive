@@ -1,6 +1,6 @@
 {
     "name": "strive",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "",
     "main": "src/index.js",
     "types": "src/index.d.ts",
@@ -14,17 +14,18 @@
         "prepublish": "npm run build-with-declarations"
     },
     "keywords": [
-      "invoker",
-      "try",
-      "tasks",
-      "strategies",
-      "strategy",
-      "runner"
+        "invoker",
+        "try",
+        "tasks",
+        "strategies",
+        "strategy",
+        "runner"
     ],
     "author": "Shalvah <hello@shalvah.me>",
     "license": "MIT",
     "dependencies": {
-        "debug": "^4.1.1"
+        "debug": "^4.1.1",
+        "promise.any": "^2.0.1"
     },
     "devDependencies": {
         "@types/node": "^12.7.2",
@@ -38,5 +39,7 @@
             "pre-push": "npm run lint"
         }
     },
-    "eslintIgnore": ["spec/**"]
+    "eslintIgnore": [
+        "spec/**"
+    ]
 }
