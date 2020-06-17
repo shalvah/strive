@@ -3,7 +3,7 @@
 Strive. Don't give up. Try a bunch of different approaches to get what you're looking for.
 
 [![npm version](https://badge.fury.io/js/strive.svg)](https://badge.fury.io/js/strive)
-[![Build Status](https://travis-ci.com/shalvah/essayer.svg?branch=master)](https://travis-ci.com/shalvah/essayer)
+[![Build Status](https://travis-ci.com/shalvah/strive.svg?branch=master)](https://travis-ci.com/shalvah/strive)
 [![npm](https://img.shields.io/npm/dt/strive)](https://www.npmjs.com/package/strive)
 
 Strive is a tool that allows you to try different techniques to accomplish a task, minus the boilerplate. Let's see how.
