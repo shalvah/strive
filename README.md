@@ -6,7 +6,7 @@ Strive. Don't give up. Try a bunch of different approaches to get what you're lo
 [![Build Status](https://travis-ci.com/shalvah/strive.svg?branch=master)](https://travis-ci.com/shalvah/strive)
 [![npm](https://img.shields.io/npm/dt/strive)](https://www.npmjs.com/package/strive)
 
-Strive is a tool that allows you to try different techniques to accomplish a task, minus the boilerplate. Let's see how.
+Strive is a tool that allows you to try different techniques to accomplish a task. Let's see how.
 
 ```bash
 npm i strive
@@ -14,7 +14,7 @@ npm i strive
 
 Suppose you were building an app that fetches song lyrics from some online services. The songs aren't popular, so there's no guarantee any single site (say, genius.com) will have them. So you have a couple of options.
 
-Normally, you'd need to write a lot of code to iterate over your sites (or run concurrently), apply any custom logic, make the API calls, handle errors, check the response, and quit if the response is what we're looking for. Strive provides an easier abstraction over that—by specifying [strategies](#trying-different-strategies), [action + values](#trying-the-same-action-with-different-values), or [mutations](#applying-custom-logic-using-mutations), and you can also configure things like [error handling, defaults and racing](#other-options).
+Normally, you'd need to write a lot of code to iterate over your sites (or run concurrently), apply any custom logic, make the API calls, handle errors, check the response, and quit if the response is what we're looking for. Strive provides an easier abstraction over that—by specifying [strategies](#trying-different-strategies), [action + values](#trying-the-same-action-with-different-values), or [action + mutations](#applying-custom-logic-using-mutations), and you can also configure things like [error handling, defaults and racing](#other-options).
 
 ## Trying different `strategies`
 Here's one way we could achieve this with Strive:
@@ -46,7 +46,7 @@ const { result, lastAttempt, success } = await strive({
 ```
 
 Strive will run the first strategy, then check its result by passing it to the `check` function (`didWeGetTheLyrics`). If the check returns false, Strive will move on to the next strategy, and so forth. When one of the strategies gives a result that passes the check, Strive will exit, returning a Promise that resolves to this:
-```json
+```
 {
   result: <yourSongLyrics>, // whatever value the successful strategy returned,
   lastAttempt: "tryLyricFindAPI", // the name of the successful strategy
