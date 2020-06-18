@@ -134,7 +134,7 @@ Strive will always return a Promise containing the result as described above. As
 There's a few other options you can pass to the `strive` function:
 
 ### `race`
-Strive runs all strategies/actions sequentially by default. If you want to run all at once and return the first successful one, then pass in `race: true`.
+Strive runs all strategies/actions sequentially by default. If you want to run all in parallel and return the first successful one, then pass in `race: true`.
 
 Note that this only works when you have functions that return promises. Strive will fire all of them off and return the first successful one (that passes the check) using [`promise.any`](https://www.npmjs.com/package/promise.any).
  
