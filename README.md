@@ -117,7 +117,7 @@ It is **not** recommended to use anonymous functions with Strive. This is becaus
 
 ```js
 const tryAzLyrics = function () {};
-const tryLyricsFind = () => {};
+const tryLyricFind = () => {};
 const strategies = [
     function tryGenius () {}, // 👍 This is good
     tryAzLyrics, // 👍 This is good
@@ -136,7 +136,7 @@ There's a few other options you can pass to the `strive` function:
 ### `race`
 Strive runs all strategies/actions sequentially by default. If you want to run all in parallel and return the first successful one, then pass in `race: true`.
 
-Note that this only works when you have functions that return promises. Strive will fire all of them off and return the first successful one (that passes the check) using [`promise.any`](https://www.npmjs.com/package/promise.any).
+Note that this only works when you have functions that return Promises. Strive will fire all of them off and return the first successful one (that passes the check) using [`promise.any`](https://www.npmjs.com/package/promise.any).
  
 ```javascript
 const { result, lastAttempt, success } = await strive({
@@ -170,8 +170,8 @@ By default, when strive runs through all the techniques and all of them fail the
 
 You can specify a different value for the `result` by supplying a `defaultValue`. (Note that the `lastAttempt` and `success` values will still be as shown above.)
 
-### Logging
-Strive uses the [`debug` package](https://www.npmjs.com/package/debug) to log info about the strategy, mutation or value it's currently trying. The debug name is `lib:strive`. This means if you start your application with the environment variable `DEBUG=lib:strive` )or use a wildcard), you'll see log messages like this:
+### Debugging
+Strive uses the [`debug` package](https://www.npmjs.com/package/debug) to log info about the strategy, mutation or value it's currently trying. The debug name is `lib:strive`. This means if you start your application with the environment variable `DEBUG=lib:strive`, you'll see log messages like this:
 
 ```
 Trying value at 0: "api.genius.com"
